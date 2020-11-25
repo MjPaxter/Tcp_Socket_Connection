@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
     startConnection();
   }
 
-  //msg is the message reseived
+  //msg is the message received
   void messageReceived(String msg){
     setState(() {
       message=msg;
