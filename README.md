@@ -1,6 +1,6 @@
 # tcp_socket_connection
 
-This package allows you to connect to a socket over the net. All data is then read using UTF-8.
+This is a Flutter package that allows you to connect to a socket over the net. All data is then read using UTF-8.
 
 ## Getting started
 
@@ -94,3 +94,4 @@ To send a message use the following method:
 ```javascript
 socketConnection.sendMessage(MESSAGE);
 ```
+It will automatically append the EOF you specified when calling the *connect* method at the end of the MESSAGE.
