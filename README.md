@@ -6,7 +6,7 @@ This is a Flutter package that allows you to connect to a socket over the net. A
 
 To use this plugin, add *tcp_socket_connection* as a dependency in your pubspec.yaml file.
 
-## Examples
+## Main Example
 Here is shown an example where a connection is established and the received message is displayed in a Text widget.
 ```javascript
 import 'package:flutter/material.dart';
@@ -86,12 +86,22 @@ Then, to establish a connection it's used the following method:
 await socketConnection.connect(TIMEOUT, EOF, CALLBACK_FUNCTION);
 ```
 
-The method *connect* allows you to set a TIMEOUT before finishing attempting to connect, an EOF representing a specific set of characters indicating that the message is finished, a CALLBACK_FUNCTION that is created by the developer and takes a *String* as parameter. The CALLBACK_FUNCTION will be called when the message is received.
+The method <span style="color:navy">**connect**</span> allows you to set a TIMEOUT before finishing attempting to connect, an EOF representing a specific set of characters indicating that the message is finished, a CALLBACK_FUNCTION that is created by the developer and takes a <span style="color:darkred">**String**</span> as parameter. The CALLBACK_FUNCTION will be called when the message is received.
 
-The word *await* is really important since the connection requires a little bit of time to be initialized. Write that line of code inside an async method to ensure it doesn't impact the UI.
+The word **await** is really important since the connection requires a little bit of time to be initialized. Write that line of code inside an async method to ensure it doesn't impact the UI.
 
 To send a message use the following method:
 ```javascript
 socketConnection.sendMessage(MESSAGE);
 ```
-It will automatically append the EOF you specified when calling the *connect* method at the end of the MESSAGE.
+It will automatically append the EOF you specified when calling the <span style="color:navy">**connect**</span> method at the end of the MESSAGE.
+
+## Examples
+Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Confirm?%separator%EOF"*. In order to read it you have to listen to the server asynchronously until you receive the EOF to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need, in this case *"Confirm?"*. This is all done by the <span style="color:navy">**connect**</span> method in only 1 line of code!
+```javascript
+await socketConnection.connect(TIMEOUT, EOF, CALLBACK_FUNCTION);
+```
+Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Store%separator%SOME_JSON_DATA%separator%EOF"*. In order to read it you have to listen to the server asynchronously until you receive the EOF to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need. First of all you have to detect which command is sent by the server, in this case "Store" and then read all the Json data untill it's finished. This is all done by the <span style="color:navy">**connectWithCommand**</span> method in only 1 line of code!
+```javascript
+await socketConnection.connectWithCommand(TIMEOUT, SEPARATOR, EOF, CALLBACK_FUNCTION);
+```

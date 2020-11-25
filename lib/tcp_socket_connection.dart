@@ -10,6 +10,7 @@ class TcpSocketConnection{
   Socket _server;
   String _eof;
   String _separator="";
+  bool _connected=false;
 
   /// Initializes che class itself
   ///  * @param  ip  server's ip you are trying to connect to
@@ -38,10 +39,10 @@ class TcpSocketConnection{
     _separator=separator;
     Timer t=_startTimeout(timeOut);
     _server = await Socket.connect(_ipAddress, _portAddress);
+    _connected=true;
     String message="";
     t.cancel();
     _server.listen((List<int> event) async {
-
       message += (utf8.decode(event));
       if(message.contains(eof)){
         List<String> commands=message.split(_separator);
@@ -53,6 +54,7 @@ class TcpSocketConnection{
         }
       }
     });
+    _connected=false;
   }
 
   /// Initializes the connection. Socket starts listening to server for data.
@@ -71,6 +73,7 @@ class TcpSocketConnection{
     _eof=eof;
     Timer t=_startTimeout(timeOut);
     _server = await Socket.connect(_ipAddress, _portAddress);
+    _connected=true;
     String message="";
     t.cancel();
     _server.listen((List<int> event) async {
@@ -85,6 +88,7 @@ class TcpSocketConnection{
         }
       }
     });
+    _connected=false;
   }
 
   /// Stop the connection and close the socket
@@ -93,10 +97,17 @@ class TcpSocketConnection{
     if(_server!=null){
       try{
         _server.close();
+
       }catch(Exception){
         print("ERROR");
       }
     }
+    _connected=false;
+  }
+
+  /// Check if the socket is connected
+  bool isConnected(){
+    return _connected;
   }
 
   /// Send message to server. Make sure to have established a connection before calling this method
@@ -136,6 +147,7 @@ class TcpSocketConnection{
         print("ERROR");
       }
     }
+    _connected=false;
     print("Can't connect to server!");
   }
 }
