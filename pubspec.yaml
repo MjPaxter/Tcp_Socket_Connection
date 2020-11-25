@@ -1,6 +1,6 @@
 name: tcp_socket_connection
 description: A flutter package to connect, listen to and send messages over tcp sockets.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/MjPaxter/Tcp_Socket_Connection
 
 environment:
