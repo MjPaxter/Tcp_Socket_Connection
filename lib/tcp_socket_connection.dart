@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
-class SocketConnection{
+class TcpSocketConnection{
 
   String _ipAddress;
   int _portAddress;
@@ -15,7 +15,7 @@ class SocketConnection{
   ///  * @param  ip  server's ip you are trying to connect to
   ///  * @param  port servers's port you are trying to connect to
 
-  SocketConnection(String ip, int port){
+  TcpSocketConnection(String ip, int port){
     _ipAddress=ip;
     _portAddress=port;
   }

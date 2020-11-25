@@ -1,14 +1,11 @@
 # tcp_socket_connection
 
-A new Flutter package.
+This package allows you to connect to a socket over the net.
 
-## Getting Started
+##Getting started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+To use this plugin, add 'tcp_socket_connection' as a dependency in your pubspec.yaml file.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+###Examples
+import 'package:flutter/material.dart';
+import 'package:tcp_socket_connection/tcp_socket_connection.dart';
