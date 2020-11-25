@@ -94,7 +94,7 @@ class TcpSocketConnection{
       try{
         _server.close();
       }catch(Exception){
-        print("WTF?!?!");
+        print("ERROR");
       }
     }
   }
@@ -133,7 +133,7 @@ class TcpSocketConnection{
       try{
         _server.close();
       }catch(Exception){
-        print("WTF?!?!");
+        print("ERROR");
       }
     }
     print("Can't connect to server!");
