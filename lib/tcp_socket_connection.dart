@@ -9,7 +9,7 @@ class TcpSocketConnection{
   int _portAddress;
   Socket _server;
   String _eof;
-  String _separator;
+  String _separator="";
 
   /// Initializes che class itself
   ///  * @param  ip  server's ip you are trying to connect to
