@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //starting the connection and listening to the socket asynchronously
   void startConnection() async{
-    await socketConnection.connect(5000, "EOF", messageReceived);
+    await socketConnection.connect(5000, "EOS", messageReceived);
   }
 
   @override
