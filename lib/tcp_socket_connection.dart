@@ -75,10 +75,37 @@ class TcpSocketConnection{
   }
 
   /// Initializes the connection. Socket starts listening to server for data.
+  /// 'callback' function will be called whenever data is received. The developer elaborates the message received however he wants.
+  /// No separator is used to split message into parts
+  ///  * @param  timeOut  amount of time to attempt the connection in milliseconds
+  ///  * @param  callback  function called when received a message. It must take a 'String' as param which is the message received.
+  simpleConnect(int timeOut, Function callback) async{
+    if(_ipAddress==null){
+      print("Cass not initialized. You must call the constructor!");
+      return;
+    }
+    Timer t=_startTimeout(timeOut);
+    _server = await Socket.connect(_ipAddress, _portAddress);
+    _connected=true;
+    _printData("Socket successfully connected");
+    String message="";
+    t.cancel();
+    _server.listen((List<int> event) async {
+      String received=(utf8.decode(event));
+      message += received;
+      _printData("Message received: "+message);
+      callback(message);
+      message="";
+    });
+    _connected=false;
+  }
+
+
+
+  /// Initializes the connection. Socket starts listening to server for data.
   /// 'callback' function will be called when 'eos' is received.
   /// No separator is used to split message into parts
   ///  * @param  timeOut  amount of time to attempt the connection in milliseconds
-  ///  * @param  separator  sequence of characters to use between commands
   ///  * @param  eos  sequence of characters at the end of each single message
   ///  * @param  callback  function called when received a message. It must take a 'String' as param which is the message received.
   connect(int timeOut, String eos,  Function callback) async{

@@ -97,7 +97,7 @@ socketConnection.sendMessage(MESSAGE);
 It will automatically append the EOS you specified when calling the <span style="color:navy">**connect**</span> method at the end of the MESSAGE.
 
 ## Examples
-Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Confirm?%separator%EOS"*. In order to read it you have to listen to the server asynchronously until you receive the EOS to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need, in this case *"Confirm?"*. This is all done by the <span style="color:navy">**connect**</span> method in only 1 line of code!
+Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Confirm?EOS"*. In order to read it you have to listen to the server asynchronously until you receive the EOS to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need, in this case *"Confirm?"*. This is all done by the <span style="color:navy">**connect**</span> method in only 1 line of code!
 ```javascript
 await socketConnection.connect(TIMEOUT, EOS, CALLBACK_FUNCTION);
 ```
