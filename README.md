@@ -105,3 +105,7 @@ Imagine you are receiving a <span style="color:darkred">**String**</span> from a
 ```javascript
 await socketConnection.connectWithCommand(TIMEOUT, SEPARATOR, EOS, CALLBACK_FUNCTION);
 ```
+Imagine you are receiving a <span style="color:darkred">**String**</span> from a server.  With the <span style="color:navy">**simpleConnect**</span> method you can read messages received (that probably need to be elaborated by you: the developer) in only 1 line of code!
+```javascript
+await socketConnection.simpleConnect(TIMEOUT, CALLBACK_FUNCTION);
+```
