@@ -45,19 +45,30 @@ class TcpSocketConnection{
   ///  * @param  separator  sequence of characters to use between commands
   ///  * @param  eos  sequence of characters at the end of each single message
   ///  * @param  callback  function called when received a message. It must take 2 'String' as params. The first one is the command received, the second one is the message itself.
-  connectWithCommand(int timeOut, String separator, String eos,  Function callback) async{
+  ///  * @param  attempts  number of attempts before stop trying to connect. Default is 1.
+  connectWithCommand(int timeOut, String separator, String eos,  Function callback, {int attempts=1}) async{
     if(_ipAddress==null){
-      print("Cass not initialized. You must call the constructor!");
+      print("Class not initialized. You must call the constructor!");
       return;
     }
     _eos=eos;
     _separator=separator;
-    Timer t=_startTimeout(timeOut);
-    _server = await Socket.connect(_ipAddress, _portAddress);
+    int k=1;
+    while(k<=attempts){
+      try{
+        _server = await Socket.connect(_ipAddress, _portAddress, timeout: new Duration(milliseconds: timeOut));
+        break;
+      }catch(Exception){
+        _printData(k.toString()+" attempt: Socket not connected (Timeout reached)");
+        if(k==attempts){
+          return;
+        }
+      }
+      k++;
+    }
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    t.cancel();
     _server.listen((List<int> event) async {
       message += (utf8.decode(event));
       if(message.contains(eos)){
@@ -71,7 +82,6 @@ class TcpSocketConnection{
         }
       }
     });
-    _connected=false;
   }
 
   /// Initializes the connection. Socket starts listening to server for data.
@@ -79,17 +89,28 @@ class TcpSocketConnection{
   /// No separator is used to split message into parts
   ///  * @param  timeOut  amount of time to attempt the connection in milliseconds
   ///  * @param  callback  function called when received a message. It must take a 'String' as param which is the message received.
-  simpleConnect(int timeOut, Function callback) async{
+  ///  * @param  attempts  number of attempts before stop trying to connect. Default is 1.
+  simpleConnect(int timeOut, Function callback,{int attempts=1}) async{
     if(_ipAddress==null){
-      print("Cass not initialized. You must call the constructor!");
+      print("Class not initialized. You must call the constructor!");
       return;
     }
-    Timer t=_startTimeout(timeOut);
-    _server = await Socket.connect(_ipAddress, _portAddress);
+    int k=1;
+    while(k<=attempts){
+      try{
+        _server = await Socket.connect(_ipAddress, _portAddress, timeout: new Duration(milliseconds: timeOut));
+        break;
+      }catch(Exception){
+        _printData(k.toString()+" attempt: Socket not connected (Timeout reached)");
+        if(k==attempts){
+          return;
+        }
+      }
+      k++;
+    }
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    t.cancel();
     _server.listen((List<int> event) async {
       String received=(utf8.decode(event));
       message += received;
@@ -97,7 +118,6 @@ class TcpSocketConnection{
       callback(message);
       message="";
     });
-    _connected=false;
   }
 
 
@@ -108,18 +128,29 @@ class TcpSocketConnection{
   ///  * @param  timeOut  amount of time to attempt the connection in milliseconds
   ///  * @param  eos  sequence of characters at the end of each single message
   ///  * @param  callback  function called when received a message. It must take a 'String' as param which is the message received.
-  connect(int timeOut, String eos,  Function callback) async{
+  ///  * @param  attempts  number of attempts before stop trying to connect. Default is 1.
+  connect(int timeOut, String eos,  Function callback, {int attempts=1}) async{
     if(_ipAddress==null){
-      print("Cass not initialized. You must call the constructor!");
+      print("Class not initialized. You must call the constructor!");
       return;
     }
     _eos=eos;
-    Timer t=_startTimeout(timeOut);
-    _server = await Socket.connect(_ipAddress, _portAddress);
+    int k=1;
+    while(k<=attempts){
+      try{
+        _server = await Socket.connect(_ipAddress, _portAddress, timeout: new Duration(milliseconds: timeOut));
+        break;
+      }catch(Exception){
+        _printData(k.toString()+" attempt: Socket not connected (Timeout reached)");
+        if(k==attempts){
+          return;
+        }
+      }
+      k++;
+    }
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    t.cancel();
     _server.listen((List<int> event) async {
       String received=(utf8.decode(event));
       message += received;
@@ -133,7 +164,6 @@ class TcpSocketConnection{
         }
       }
     });
-    _connected=false;
   }
 
   /// Stop the connection and close the socket
@@ -152,6 +182,7 @@ class TcpSocketConnection{
   /// Check if the socket is connected
   bool isConnected(){
     return _connected;
+
   }
 
   /// Send message to server. Make sure to have established a connection before calling this method
@@ -179,7 +210,36 @@ class TcpSocketConnection{
     }
   }
 
-  _startTimeout(int time) {
+
+  /// Test the connection. It will try to connect to the endpoint and if it does, it will disconnect and return 'true' (otherwise false)
+  ///  * @param  timeOut  amount of time to attempt the connection in milliseconds
+  ///  * @param  attempts  number of attempts before stop trying to connect. Default is 1.
+  Future<bool> canConnect(int timeOut,{int attempts=1}) async{
+    if(_ipAddress==null){
+      print("Class not initialized. You must call the constructor!");
+      this.disconnect();
+      return false;
+    }
+    int k=1;
+    while(k<=attempts){
+      try{
+        _server = await Socket.connect(_ipAddress, _portAddress, timeout: new Duration(milliseconds: timeOut));
+        this.disconnect();
+        return true;
+      }catch(Exception){
+        _printData(k.toString()+" attempt: Socket not connected (Timeout reached)");
+        if(k==attempts){
+          this.disconnect();
+          return false;
+        }
+      }
+      k++;
+    }
+    this.disconnect();
+    return false;
+  }
+
+  /*_startTimeout(int time) {
     var duration = Duration(milliseconds: time);
     return new Timer(duration, ()=> _handleTimeout());
   }
@@ -188,13 +248,14 @@ class TcpSocketConnection{
     if(_server!=null){
       try{
         _server.close();
+        //_server.destroy();
       }catch(Exception){
         print("ERROR");
       }
     }
     _connected=false;
     print("Timer elapsed! Can't connect to server!");
-  }
+  }*/
 
   void _printData(String data){
     if(_logPrintEnabled){
