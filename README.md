@@ -39,7 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //Instantiating the class with the Ip and the PortNumber
   TcpSocketConnection socketConnection=TcpSocketConnection("192.168.1.113", 10251);
+
   String message="";
 
   @override
@@ -48,16 +50,20 @@ class _MyHomePageState extends State<MyHomePage> {
     startConnection();
   }
 
-  //msg is the message received
+  //receiving and sending back a custom message
   void messageReceived(String msg){
     setState(() {
       message=msg;
     });
+    socketConnection.sendMessage("MessageIsReceived :D ");
   }
 
-  //timeout is set to 5000 ms and messageReceived will be called when 'EOS' received
+  //starting the connection and listening to the socket asynchronously
   void startConnection() async{
-    await socketConnection.connect(5000, "EOS", messageReceived);
+    socketConnection.enableConsolePrint(true);    //use this to see in the console what's happening
+    if(await socketConnection.canConnect(5000, attempts: 3)){   //check if it's possible to connect to the endpoint
+      await socketConnection.connect(5000, "EOS", messageReceived, attempts: 3);
+    }
   }
 
   @override
@@ -68,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Text(
-          'You have received'+ message,
+          'You have received '+ message,
         ),
       ),
     );
@@ -99,13 +105,17 @@ It will automatically append the EOS you specified when calling the <span style=
 ## Examples
 Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Confirm?EOS"*. In order to read it you have to listen to the server asynchronously until you receive the EOS to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need, in this case *"Confirm?"*. This is all done by the <span style="color:navy">**connect**</span> method in only 1 line of code!
 ```javascript
-await socketConnection.connect(TIMEOUT, EOS, CALLBACK_FUNCTION);
+await socketConnection.connect(TIMEOUT, EOS, CALLBACK_FUNCTION, {ATTEMPTS=1});
 ```
 Imagine you are receiving a <span style="color:darkred">**String**</span> from a server which states *"Store%separator%SOME_JSON_DATA%separator%EOS"*. In order to read it you have to listen to the server asynchronously until you receive the EOS to be sure that the message is finished. After that you have to split the <span style="color:darkred">**String**</span> and keep only the part you need. First of all you have to detect which command is sent by the server, in this case "Store" and then read all the Json data untill it's finished. This is all done by the <span style="color:navy">**connectWithCommand**</span> method in only 1 line of code!
 ```javascript
-await socketConnection.connectWithCommand(TIMEOUT, SEPARATOR, EOS, CALLBACK_FUNCTION);
+await socketConnection.connectWithCommand(TIMEOUT, SEPARATOR, EOS, CALLBACK_FUNCTION, {ATTEMPTS=1});
 ```
 Imagine you are receiving a <span style="color:darkred">**String**</span> from a server.  With the <span style="color:navy">**simpleConnect**</span> method you can read messages received (that probably need to be elaborated by you: the developer) in only 1 line of code!
 ```javascript
-await socketConnection.simpleConnect(TIMEOUT, CALLBACK_FUNCTION);
+await socketConnection.simpleConnect(TIMEOUT, CALLBACK_FUNCTION, {ATTEMPTS=1});
 ```
+
+## Last but not least
+
+If you find this package useful, don't forget to leave a like! I appreciate it!

@@ -30,6 +30,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //Instantiating the class with the Ip and the PortNumber
   TcpSocketConnection socketConnection=TcpSocketConnection("192.168.1.113", 10251);
+
   String message="";
 
   @override
@@ -43,12 +44,15 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       message=msg;
     });
-    socketConnection.sendMessage("MessageIsReceived :D");
+    socketConnection.sendMessage("MessageIsReceived :D ");
   }
 
   //starting the connection and listening to the socket asynchronously
   void startConnection() async{
-    await socketConnection.connect(5000, "EOS", messageReceived);
+    socketConnection.enableConsolePrint(true);    //use this to see in the console what's happening
+    if(await socketConnection.canConnect(5000, attempts: 3)){   //check if it's possible to connect to the endpoint
+      await socketConnection.connect(5000, "EOS", messageReceived, attempts: 3);
+    }
   }
 
   @override
@@ -61,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Text(
           'You have received '+ message,
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
