@@ -190,14 +190,19 @@ class TcpSocketConnection{
   ///  * @param  message  message to send to server
   void sendMessage(String message) async{
     if(_server!=null){
-      _server.add(utf8.encode(message+_separator+_eos));
+      if(_eos==null){
+        _server.add(utf8.encode(message));
+      }else{
+        _server.add(utf8.encode(message+_separator+_eos));
+      }
+
       _printData("Message sent: "+message+_separator+_eos);
     }else{
       print("Socket not initialized before sending message! Make sure you have already called the method 'connect()'");
     }
   }
 
-  /// Send message to server with a command. Make sure to have established a connection before calling this method
+  /// Send message to server with a command. Make sure to have established a connection before calling this method. Never use this if the connection is established with the 'simpleConnnect()' method
   /// Message will be sent as 'command'+'separator'+'message'+'separator'+'eos'
   ///  * @param  message  message to send to server
   ///  * @param  command  tells the server what to do with the message

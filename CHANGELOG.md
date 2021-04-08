@@ -1,3 +1,6 @@
+## [0.2.2] - 08/04/2021 - Fixed bug
+Fixed NullPointerException bug when using simpleConnect
+
 ## [0.2.1] - 13/12/2020 - Added attempts and 'canConnect' method
 Added optional parameter 'attempts' to specify how many times the socket should retry to connect before stopping.
 
