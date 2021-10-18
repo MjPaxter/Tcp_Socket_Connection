@@ -5,10 +5,10 @@ import 'dart:convert';
 
 class TcpSocketConnection{
 
-  String _ipAddress;
-  int _portAddress;
-  Socket _server;
-  String _eos;
+  late String _ipAddress;
+  late int _portAddress;
+  Socket? _server;
+  late String _eos;
   String _separator="";
   bool _connected=false;
   bool _logPrintEnabled=false;
@@ -69,7 +69,7 @@ class TcpSocketConnection{
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    _server.listen((List<int> event) async {
+    _server?.listen((List<int> event) async {
       message += (utf8.decode(event));
       if(message.contains(eos)){
         List<String> commands=message.split(_separator);
@@ -111,7 +111,7 @@ class TcpSocketConnection{
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    _server.listen((List<int> event) async {
+    _server?.listen((List<int> event) async {
       String received=(utf8.decode(event));
       message += received;
       _printData("Message received: "+message);
@@ -151,7 +151,7 @@ class TcpSocketConnection{
     _connected=true;
     _printData("Socket successfully connected");
     String message="";
-    _server.listen((List<int> event) async {
+    _server?.listen((List<int> event) async {
       String received=(utf8.decode(event));
       message += received;
       if(message.contains(eos)){
@@ -170,7 +170,7 @@ class TcpSocketConnection{
   void disconnect(){
     if(_server!=null){
       try{
-        _server.close();
+        _server?.close();
         _printData("Socket disconnected successfully");
       }catch(Exception){
         print("ERROR");
@@ -191,9 +191,9 @@ class TcpSocketConnection{
   void sendMessage(String message) async{
     if(_server!=null){
       if(_eos==null){
-        _server.add(utf8.encode(message));
+        _server?.add(utf8.encode(message));
       }else{
-        _server.add(utf8.encode(message+_separator+_eos));
+        _server?.add(utf8.encode(message+_separator+_eos));
       }
 
       _printData("Message sent: "+message+_separator+_eos);
@@ -208,7 +208,7 @@ class TcpSocketConnection{
   ///  * @param  command  tells the server what to do with the message
   void sendMessageWithCommand(String message, String command) async{
     if(_server!=null){
-      _server.add(utf8.encode(command+_separator+message+_separator+_eos));
+      _server?.add(utf8.encode(command+_separator+message+_separator+_eos));
       _printData("Message sent: "+command+_separator+message+_separator+_eos);
     }else{
       print("Socket not initialized before sending message! Make sure you have alreadt called the method 'connect()'");
