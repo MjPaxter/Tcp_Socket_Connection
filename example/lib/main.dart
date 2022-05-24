@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void startConnection() async{
     socketConnection.enableConsolePrint(true);    //use this to see in the console what's happening
     if(await socketConnection.canConnect(5000, attempts: 3)){   //check if it's possible to connect to the endpoint
-      await socketConnection.connect(5000, "EOS", messageReceived, attempts: 3);
+      await socketConnection.connect(5000, messageReceived, attempts: 3);
     }
   }
 

@@ -1,3 +1,6 @@
+## [0.3.0] - 24/05/2022 - Removed methods and improved performance
+Removed useless methods and drastically improved performance by means of StringBuffers.
+
 ## [0.2.2] - 08/04/2021 - Fixed bug
 Fixed NullPointerException bug when using simpleConnect
 
