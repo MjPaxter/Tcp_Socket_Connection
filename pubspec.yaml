@@ -4,7 +4,7 @@ version: 0.3.0
 homepage: https://github.com/MjPaxter/Tcp_Socket_Connection
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
