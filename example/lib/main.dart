@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tcp_socket_connection/tcp_socket_connection.dart';
 
@@ -29,9 +30,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   //Instantiating the class with the Ip and the PortNumber
-  TcpSocketConnection socketConnection=TcpSocketConnection("192.168.1.113", 10251);
+  TcpSocketConnection socketConnection =
+      TcpSocketConnection(ip: "127.0.0.1", port: 10251);
 
-  String message="";
+  String message = "";
 
   @override
   void initState() {
@@ -40,17 +42,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //receiving and sending back a custom message
-  void messageReceived(String msg){
+  void messageReceived(String msg) {
     setState(() {
-      message=msg;
+      message = msg;
     });
     socketConnection.sendMessage("MessageIsReceived :D ");
   }
 
   //starting the connection and listening to the socket asynchronously
-  void startConnection() async{
-    socketConnection.enableConsolePrint(true);    //use this to see in the console what's happening
-    if(await socketConnection.canConnect(5000, attempts: 3)){   //check if it's possible to connect to the endpoint
+  void startConnection() async {
+    socketConnection.enableConsolePrint(
+        true); //use this to see in the console what's happening
+    if (await socketConnection.canConnect(5000, attempts: 3)) {
+      //check if it's possible to connect to the endpoint
       await socketConnection.connect(5000, messageReceived, attempts: 3);
     }
   }
@@ -63,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Text(
-          'You have received '+ message,
+          'You have received ' + message,
         ),
       ),
     );
